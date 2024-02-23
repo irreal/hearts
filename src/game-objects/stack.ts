@@ -10,8 +10,10 @@ export type CardClickedParameters = {
   index: number;
   cardModel: CardModel;
 };
-export class Stack extends Phaser.GameObjects.Container {
+export class Stack extends Phaser.GameObjects.GameObject {
   options: StackOptions;
+  x: number;
+  y: number;
   // cards: CardModel[];
   cardObjects: Card[] = [];
   constructor(
@@ -21,8 +23,9 @@ export class Stack extends Phaser.GameObjects.Container {
     cardModels: CardModel[],
     options: StackOptions
   ) {
-    super(scene, x, y, []);
-
+    super(scene, "stack");
+    this.x = x;
+    this.y = y;
     this.options = options;
     const positions = this.createPositions(cardModels);
 
@@ -30,8 +33,8 @@ export class Stack extends Phaser.GameObjects.Container {
       this.createCard(
         scene,
         cardModels[i],
-        positions[i].x,
-        positions[i].y,
+        this.x + positions[i].x,
+        this.y + positions[i].y,
         i,
         i
       );
@@ -47,8 +50,6 @@ export class Stack extends Phaser.GameObjects.Container {
     depth: number
   ): Card {
     const animationDetails = getPositionAndTween(
-      this.x,
-      this.y,
       x,
       y,
       index,
@@ -76,7 +77,7 @@ export class Stack extends Phaser.GameObjects.Container {
     });
     card.rotation = degToRad(this.options.rotateCardsDegrees);
     card.setDepth(depth);
-    this.add(card);
+    scene.add.existing(card);
     this.cardObjects.push(card);
     return card;
   }
@@ -121,12 +122,21 @@ export class Stack extends Phaser.GameObjects.Container {
         equalCards(card.cardModel, stack[i])
       );
       if (existing) {
-        this.bringToTop(existing);
+        existing.setDepth(i);
         seen.push(existing);
         if (existing.cardModel.faceUp !== stack[i].faceUp) {
-          recreateCard(existing, stack[i], positions[i].x, positions[i].y, i);
+          recreateCard(
+            existing,
+            stack[i],
+            this.x + positions[i].x,
+            this.y + positions[i].y,
+            i
+          );
         } else {
-          existing.updatePosition(positions[i].x, positions[i].y);
+          existing.updatePosition(
+            this.x + positions[i].x,
+            this.y + positions[i].y
+          );
           // console.log("setting depth", i);
         }
       } else {
@@ -134,8 +144,8 @@ export class Stack extends Phaser.GameObjects.Container {
           this.createCard(
             this.scene,
             stack[i],
-            positions[i].x,
-            positions[i].y,
+            this.x + positions[i].x,
+            this.y + positions[i].y,
             i,
             i
           )
@@ -145,7 +155,6 @@ export class Stack extends Phaser.GameObjects.Container {
 
     for (let i = 0; i < this.cardObjects.length; i++) {
       if (!seen.includes(this.cardObjects[i])) {
-        this.remove(this.cardObjects[i]);
         this.cardObjects[i].destroy();
         this.cardObjects.splice(i, 1);
       }

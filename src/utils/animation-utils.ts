@@ -1,8 +1,6 @@
 import { CardAnimation } from "../models/card-animation.models";
 
 export function getPositionAndTween(
-  ownerX: number,
-  ownerY: number,
   targetX: number,
   targetY: number,
   index: number,
@@ -18,12 +16,12 @@ export function getPositionAndTween(
     | null;
 } {
   if (!animation) {
-    return { startX: targetX - ownerX, startY: targetY - ownerY, tween: null };
+    return { startX: targetX, startY: targetY, tween: null };
   }
   if (animation.type === "fly-in") {
     return {
-      startX: animation.originX - ownerX,
-      startY: animation.originY - ownerY,
+      startX: animation.originX,
+      startY: animation.originY,
       tween: {
         targets: null,
         x: targetX,
