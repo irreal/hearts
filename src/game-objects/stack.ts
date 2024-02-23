@@ -85,31 +85,48 @@ export class Stack extends Phaser.GameObjects.GameObject {
   createPositions(stack: StackModel): { x: number; y: number }[] {
     const positions: { x: number; y: number }[] = [];
 
-    let cardX = 0;
-    let cardY = 0;
-    for (let i = 0; i < stack.length; i++) {
-      positions.push({ x: cardX, y: cardY });
-      if (this.options.orientation === "horizontal") {
-        cardX += this.options.xSpacing;
-      }
-      if (this.options.orientation === "vertical") {
-        cardY += this.options.ySpacing;
-      }
+    const cardsPerRow = Math.min(stack.length, this.options.maxCardsPerRow);
 
-      if ((i + 1) % this.options.maxCardsPerRow === 0) {
-        if (!this.options.multiRow) {
-          break;
-        }
-        if (this.options.orientation === "horizontal") {
+    if (this.options.orientation === "horizontal") {
+      const initialCardX =
+        (((cardsPerRow - 1) * this.options.xSpacing) / 2) * -1;
+      let cardX = initialCardX;
+      let cardY = 0;
+
+      for (let i = 0; i < stack.length; i++) {
+        positions.push({ x: cardX, y: cardY });
+
+        const isEndOfRow = i % cardsPerRow === cardsPerRow - 1;
+        if (isEndOfRow) {
+          // Move to the next row
           cardY += this.options.ySpacing;
-          cardX = 0;
-        }
-        if (this.options.orientation === "vertical") {
+          cardX = initialCardX;
+        } else {
+          // Move to the next card in the same row
           cardX += this.options.xSpacing;
-          cardY = 0;
+        }
+      }
+    } else if (this.options.orientation === "vertical") {
+      const initialCardY =
+        (((cardsPerRow - 1) * this.options.ySpacing) / 2) * -1;
+      let cardY = initialCardY;
+      let cardX = 0;
+
+      for (let i = 0; i < stack.length; i++) {
+        positions.push({ x: cardX, y: cardY });
+
+        const isEndOfColumn = i % cardsPerRow === cardsPerRow - 1;
+        if (isEndOfColumn) {
+          // Move to the next column
+          cardX += this.options.xSpacing;
+          cardY = initialCardY;
+        } else {
+          // Move to the next card in the same column
+          cardY += this.options.ySpacing;
         }
       }
     }
+
     return positions;
   }
 
@@ -135,7 +152,8 @@ export class Stack extends Phaser.GameObjects.GameObject {
         } else {
           existing.updatePosition(
             this.x + positions[i].x,
-            this.y + positions[i].y
+            this.y + positions[i].y,
+            this.options.rotateCardsDegrees
           );
           // console.log("setting depth", i);
         }
@@ -159,6 +177,17 @@ export class Stack extends Phaser.GameObjects.GameObject {
         this.cardObjects.splice(i, 1);
       }
     }
+  }
+
+  removeCardByModel(card: CardModel): Card | undefined {
+    const existing = this.cardObjects.find((c) =>
+      equalCards(c.cardModel, card)
+    );
+    if (existing) {
+      this.cardObjects = this.cardObjects.filter((c) => c !== existing);
+      return existing;
+    }
+    return undefined;
   }
 }
 function recreateCard(

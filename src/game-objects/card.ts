@@ -5,7 +5,7 @@ export class Card extends Phaser.GameObjects.Container {
   scene: Phaser.Scene;
   tween: Phaser.Tweens.BaseTween | null = null;
 
-  updatePosition(x: number, y: number) {
+  updatePosition(x: number, y: number, rotationDegrees: number) {
     if (this.tween) {
       this.tween.stop();
     }
@@ -13,6 +13,7 @@ export class Card extends Phaser.GameObjects.Container {
       targets: this,
       x: x,
       y: y,
+      rotation: degToRad(rotationDegrees),
       duration: config.defaultAnimationDuration * config.animationSpeedFactor, // duration of the tween in milliseconds
       ease: "Power2", // easing function to use
     });

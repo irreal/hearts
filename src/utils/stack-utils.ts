@@ -1,4 +1,4 @@
-import { Suits, Values } from "../models/card.model";
+import { CardModel, Suits, Values, equalCards } from "../models/card.model";
 import { StackModel } from "../models/stack.model";
 
 export const createDeck = (faceUp = false): StackModel => {
@@ -57,4 +57,12 @@ export function sortStack(stack: StackModel): void {
     }
     return Suits.indexOf(a.suit) - Suits.indexOf(b.suit);
   });
+}
+
+export function takeCardByModel(stack: StackModel, card: CardModel) {
+  const index = stack.findIndex((c) => equalCards(c, card));
+  if (index === -1) {
+    return undefined;
+  }
+  return stack.splice(index, 1)[0];
 }

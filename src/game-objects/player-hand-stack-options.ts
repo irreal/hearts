@@ -8,7 +8,7 @@ export function getPlayerHandStackOptions(
   return {
     orientation,
     xSpacing: 59,
-    ySpacing: 60,
+    ySpacing: 59,
     rotateCardsDegrees: rotation,
     multiRow: true,
     maxCardsPerRow: 7,

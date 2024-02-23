@@ -7,8 +7,8 @@ import TestScene from "./TestScene";
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   scale: {
-    height: 932,
     width: 430,
+    height: 932,
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     parent: "app",
