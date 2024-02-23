@@ -6,9 +6,13 @@ import TestScene from "./TestScene";
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
-  parent: "app",
-  height: 932,
-  width: 430,
+  scale: {
+    height: 932,
+    width: 430,
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    parent: "app",
+  },
   backgroundColor: "#608C51",
   physics: {
     default: "arcade",
