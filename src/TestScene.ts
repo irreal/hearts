@@ -2,12 +2,7 @@ import Phaser from "phaser";
 import { getPlayerHandStackOptions } from "./game-objects/player-hand-stack-options";
 import { CardClickedParameters, Stack } from "./game-objects/stack";
 import { CardModel, equalCards } from "./models/card.model";
-import {
-  createDeck,
-  shuffleStack,
-  takeFromBottom,
-  takeFromTop,
-} from "./utils/stack-utils";
+import { createDeck, shuffleStack, takeFromBottom } from "./utils/stack-utils";
 
 export default class TestScene extends Phaser.Scene {
   constructor() {

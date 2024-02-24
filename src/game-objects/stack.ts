@@ -147,7 +147,8 @@ export class Stack extends Phaser.GameObjects.GameObject {
             stack[i],
             this.x + positions[i].x,
             this.y + positions[i].y,
-            i
+            i,
+            this.options.rotateCardsDegrees
           );
         } else {
           existing.updatePosition(
@@ -195,12 +196,13 @@ function recreateCard(
   newCardModel: CardModel,
   x: number,
   y: number,
-  depth: number
+  depth: number,
+  rotation: number
 ) {
   existing.cardModel = structuredClone(newCardModel);
   existing.x = x;
   existing.y = y;
   existing.updateTexture();
-  existing.updatePosition(x, y);
+  existing.updatePosition(x, y, rotation);
   existing.setDepth(depth);
 }
